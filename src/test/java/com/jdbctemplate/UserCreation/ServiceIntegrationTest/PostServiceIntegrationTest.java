@@ -34,43 +34,35 @@ public class PostServiceIntegrationTest extends AbstractIntegrationTest {
         postEntity1.setDescription("Description 1");
         postEntity1.setUserId(1L);
 
-        // Создание поста через сервис
         postService.createPost(postEntity1);
 
-        // Получение поста по ID
         PostEntity createdPost = postRepos.findById(postEntity1.getId());
         assertNotNull(createdPost);
         assertEquals("Post 1", createdPost.getTitle());
         assertEquals("Description 1", createdPost.getDescription());
 
-        // Создание второго поста
         PostEntity postEntity2 = new PostEntity();
         postEntity2.setTitle("Post 2");
         postEntity2.setDescription("Description 2");
         postEntity2.setUserId(2L);
         postService.createPost(postEntity2);
 
-        // Получение второго поста по ID
         PostEntity createdPost2 = postRepos.findById(postEntity2.getId());
         assertNotNull(createdPost2);
         assertEquals("Post 2", createdPost2.getTitle());
         assertEquals("Description 2", createdPost2.getDescription());
 
-        // Обновление первого поста
         postEntity1.setTitle("Updated Post 1");
         postEntity1.setDescription("Updated Description 1");
         postService.updatePost(postEntity1.getId(), postEntity1);
 
-        // Получение обновленного поста
         PostEntity updatedPost = postRepos.findById(postEntity1.getId());
         assertNotNull(updatedPost);
         assertEquals("Updated Post 1", updatedPost.getTitle());
         assertEquals("Updated Description 1", updatedPost.getDescription());
 
-        // Удаление поста
         postService.deletePost(postEntity1.getId());
 
-        // Проверка, что пост удален
         PostEntity deletedPost = postRepos.findById(postEntity1.getId());
         assertNull(deletedPost);
     }

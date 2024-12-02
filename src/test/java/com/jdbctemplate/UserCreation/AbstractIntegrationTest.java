@@ -22,6 +22,9 @@ public abstract class AbstractIntegrationTest {
 
 
 
+
+
+
     static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
         private static final Logger logger = LoggerFactory.getLogger(Initializer.class);
 

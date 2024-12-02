@@ -14,8 +14,9 @@ public class PostRepos {
     private final JdbcTemplate jdbcTemplate;
 
     public void save(PostEntity post) {
-        String sql = "INSERT INTO posts (title, description, user_id) VALUES (?, ?, ?)";
-        jdbcTemplate.update(sql, post.getTitle(), post.getDescription(), post.getUserId());
+        String sql = "INSERT INTO posts (title, description, user_id) VALUES (?, ?, ?) RETURNING id";
+        Long generatedId = jdbcTemplate.queryForObject(sql, new Object[]{post.getTitle(), post.getDescription(), post.getUserId()}, Long.class);
+        post.setId(generatedId);
     }
     public void update(PostEntity post) {
         String sql = "UPDATE posts SET title = ?, description = ?, user_id = ? WHERE id = ?";
