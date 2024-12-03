@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class PostService {
 
-
     private final PostRepos postRepos;
 
     public void createPost(PostEntity postEntity) {

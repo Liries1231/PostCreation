@@ -18,7 +18,8 @@ import java.util.Arrays;
 public abstract class AbstractIntegrationTest {
 
     public static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("postgres:15")
-            .withExposedPorts(5432);
+            .withExposedPorts(5432)
+            .withInitScript("schema.sql");
 
 
 

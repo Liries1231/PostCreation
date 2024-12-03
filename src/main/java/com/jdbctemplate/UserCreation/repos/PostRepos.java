@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 @AllArgsConstructor
 public class PostRepos {
 
+
     private final JdbcTemplate jdbcTemplate;
 
     public void save(PostEntity post) {

@@ -14,6 +14,7 @@ public class PostController {
 
     private final PostService postService;
 
+
     @PostMapping
     public ResponseEntity<PostEntity> createPost(@RequestBody PostEntity postEntity) {
         postService.createPost(postEntity);

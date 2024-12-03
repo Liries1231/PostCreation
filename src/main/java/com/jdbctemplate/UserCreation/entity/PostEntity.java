@@ -19,3 +19,4 @@ public class PostEntity {
     private String description;
     private Long userId;
 }
+
