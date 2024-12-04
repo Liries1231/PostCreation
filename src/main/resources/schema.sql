@@ -19,8 +19,5 @@ DO $$
     END $$;
 
 
-SELECT * FROM post
-WHERE TITLE LIKE  'Post Title 1047'
-
 
 

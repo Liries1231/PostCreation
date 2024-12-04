@@ -4,17 +4,25 @@ import com.jdbctemplate.UserCreation.AbstractIntegrationTest;
 import com.jdbctemplate.UserCreation.entity.PostEntity;
 import com.jdbctemplate.UserCreation.repos.PostRepos;
 import com.jdbctemplate.UserCreation.service.PostService;
+import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.Commit;
 
+import java.util.List;
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Commit
-
 public class PostServiceIntegrationTest extends AbstractIntegrationTest {
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
 
     @Autowired
@@ -62,4 +70,23 @@ public class PostServiceIntegrationTest extends AbstractIntegrationTest {
         PostEntity deletedPost = postRepos.findById(postEntity1.getId());
         assertNull(deletedPost);
     }
+
+    @Test
+    void testFindPostsByTitle() {
+        String sql = "SELECT * FROM post WHERE title LIKE ?";
+
+        long start = System.currentTimeMillis();
+        List<Map<String, Object>> posts = jdbcTemplate.queryForList(sql, "Post Title 1");
+        long finish = System.currentTimeMillis();
+
+        assertThat(posts).isNotEmpty();
+
+        posts.forEach(post -> System.out.println("Found post: " + post));
+        System.out.println("Time " + (finish - start) + " ms");
+
+
+
+    }
+
+
 }
