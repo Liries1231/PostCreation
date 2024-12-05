@@ -72,18 +72,22 @@ public class PostServiceIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void testFindPostsByTitle() {
-        String sql = "SELECT * FROM post WHERE title LIKE ?";
+    void    testFindPostsByTitle() {
+        String sql = "SELECT id, title, created_at FROM post ORDER BY created_at DESC LIMIT 10000";
 
         long start = System.currentTimeMillis();
-        List<Map<String, Object>> posts = jdbcTemplate.queryForList(sql, "Post Title 1");
+        List<Map<String, Object>> posts = jdbcTemplate.queryForList(sql);
+
+        List<Map<String, Object>> filteredPosts = posts.stream()
+                .filter(post -> post.get("title").toString().contains("5"))
+                .toList();
         long finish = System.currentTimeMillis();
 
         assertThat(posts).isNotEmpty();
 
-        posts.forEach(post -> System.out.println("Found post: " + post));
+         // posts.forEach(post -> System.out.println("Found post: " + filteredPosts));
         System.out.println("Time " + (finish - start) + " ms");
-
+        System.out.println("total size " + filteredPosts.size());
 
 
     }

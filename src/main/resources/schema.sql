@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS post
 );
 DO $$
     BEGIN
-        FOR i IN 1..100000 LOOP
+        FOR i IN 1..2000000 LOOP
                 INSERT INTO post (title, description, user_id)
                 VALUES (
                            'Post Title ' || i,
@@ -17,6 +17,18 @@ DO $$
                        );
             END LOOP;
     END $$;
+ALTER TABLE post ADD COLUMN created_at TIMESTAMP DEFAULT now();
+
+CREATE INDEX idx_post_created_at ON post (created_at DESC);
+
+
+
+
+
+
+
+
+
 
 
 
