@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.Commit;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +25,7 @@ public class PostServiceIntegrationTest extends AbstractIntegrationTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    private final Map<String, List<Map<String, Object>>> cache = new HashMap<>();
 
     @Autowired
     private PostService postService;
@@ -72,25 +74,50 @@ public class PostServiceIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void    testFindPostsByTitle() {
-        String sql = "SELECT id, title, created_at FROM post ORDER BY created_at DESC LIMIT 10000";
+    void testFindPostsByTitleTwice() {
+        String search1 = "5";
+        String search2 = "7";
 
-        long start = System.currentTimeMillis();
-        List<Map<String, Object>> posts = jdbcTemplate.queryForList(sql);
+        System.out.println("First search:");
+        findPostsByTitle(search1);
 
-        List<Map<String, Object>> filteredPosts = posts.stream()
-                .filter(post -> post.get("title").toString().contains("5"))
-                .toList();
-        long finish = System.currentTimeMillis();
+        System.out.println("Second search:");
+        findPostsByTitle(search2);
+    }
 
-        assertThat(posts).isNotEmpty();
+    void findPostsByTitle(String search) {
 
-         // posts.forEach(post -> System.out.println("Found post: " + filteredPosts));
-        System.out.println("Time " + (finish - start) + " ms");
-        System.out.println("total size " + filteredPosts.size());
+
+        List<Map<String, Object>> cachedPosts = cache.get(search);
+
+        if (cachedPosts != null) {
+            System.out.println("Using cached data...");
+            System.out.println("Total size (cached): " + cachedPosts.size());
+
+
+        } else {
+            String sql = "SELECT id, title, created_at FROM post ORDER BY created_at DESC LIMIT 10";
+
+            long start = System.currentTimeMillis();
+            List<Map<String, Object>> posts = jdbcTemplate.queryForList(sql);
+
+            List<Map<String, Object>> filteredPosts = posts.stream()
+                    .filter(post -> post.get("title").toString().contains(search))
+                    .toList();
+            long finish = System.currentTimeMillis();
+
+            assertThat(posts).isNotEmpty();
+
+            // posts.forEach(post -> System.out.println("Found post: " + filteredPosts));
+            System.out.println("Time " + (finish - start) + " ms");
+            System.out.println("total size " + filteredPosts.size());
+            cache.put(search, filteredPosts);
+            System.out.println("Cache content: " + cache);
+
+
+
+        }
 
 
     }
-
-
 }
