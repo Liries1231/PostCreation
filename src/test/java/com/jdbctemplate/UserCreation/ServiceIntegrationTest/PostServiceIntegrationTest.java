@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.Commit;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,9 +75,51 @@ public class PostServiceIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
+    void latest() {
+        String cacheKey1 = "latest_posts1";
+        String cacheKey2 = "latest_posts2";
+        String cacheKey3 = "latest_posts3";
+
+
+        System.out.println("First search:");
+        testLatestPostsCaching(cacheKey1);
+
+        System.out.println("Second search:");
+        testLatestPostsCaching(cacheKey2);
+
+        System.out.println("Third search:");
+
+        PostEntity postEntity1 = new PostEntity();
+        postEntity1.setTitle("Post 321312");
+        postEntity1.setDescription("Description 321312");
+        postEntity1.setUserId(77777L);
+        testLatestPostsCaching(cacheKey3);
+
+    }
+
+    public void testLatestPostsCaching(String cacheKey) {
+        List<Map<String, Object>> cachedPosts = cache.get(cacheKey);
+        if (cachedPosts != null) {
+            System.out.println("Using cached latest posts...");
+            System.out.println("Total size (cached): " + cachedPosts.size());
+        } else {
+            String sql = "SELECT id, title, created_at FROM post ORDER BY created_at DESC LIMIT 10";
+            long start = System.currentTimeMillis();
+            List<Map<String, Object>> posts = jdbcTemplate.queryForList(sql);
+            long finish = System.currentTimeMillis();
+            System.out.println("Time " + (finish - start) + " ms");
+            cache.put(cacheKey, posts);
+
+
+        }
+
+
+    }
+
+    @Test
     void testFindPostsByTitleTwice() {
         String search1 = "5";
-        String search2 = "7";
+        String search2 = "1";
 
         System.out.println("First search:");
         findPostsByTitle(search1);
@@ -113,7 +156,6 @@ public class PostServiceIntegrationTest extends AbstractIntegrationTest {
             System.out.println("total size " + filteredPosts.size());
             cache.put(search, filteredPosts);
             System.out.println("Cache content: " + cache);
-
 
 
         }
