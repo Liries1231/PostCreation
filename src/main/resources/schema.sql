@@ -18,7 +18,6 @@ DO $$
             END LOOP;
     END $$;
 ALTER TABLE post ADD COLUMN created_at TIMESTAMP DEFAULT now();
-
 CREATE INDEX idx_post_created_at ON post (created_at DESC);
 
 
