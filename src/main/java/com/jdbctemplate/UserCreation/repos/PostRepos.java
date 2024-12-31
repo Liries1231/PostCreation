@@ -20,6 +20,7 @@ public class PostRepos {
         Long generatedId = jdbcTemplate.queryForObject(sql, new Object[]{post.getTitle(), post.getDescription(), post.getUserId()}, Long.class);
         post.setId(generatedId);
     }
+
     public List<PostEntity> findPostsByPage(int page, int pageSize) {
         int offset = (page - 1) * pageSize;
 
@@ -55,16 +56,16 @@ public class PostRepos {
         String sql = "DELETE FROM posts WHERE id = ?";
         jdbcTemplate.update(sql, id);
     }
+
     public PostEntity findById(Long id) {
         String sql = "SELECT id, title, description, user_id FROM posts WHERE id = ?";
 
         try {
             return jdbcTemplate.queryForObject(sql, new Object[]{id}, new BeanPropertyRowMapper<>(PostEntity.class));
         } catch (EmptyResultDataAccessException e) {
-            return  null;
+            return null;
         }
     }
-
 
 
 }
