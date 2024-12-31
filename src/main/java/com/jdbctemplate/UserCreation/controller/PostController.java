@@ -19,14 +19,14 @@ public class PostController {
 
 
     @GetMapping("/last")
-    public List<Map<String, Object>> lastPost() {
+    public List<PostEntity> lastPost() {
         return postService.getLastPosts();
     }
 
     @GetMapping("/page/{page}")
-    public ResponseEntity<List<Map<String, Object>>> getPosts(@PathVariable int page,
+    public ResponseEntity<List<PostEntity>> getPosts(@PathVariable int page,
                                                               @RequestParam(defaultValue = "10") int pageSize) {
-        List<Map<String, Object>> posts = postService.pages(page, pageSize);
+        List<PostEntity> posts = postService.pages(page, pageSize);
 
         return ResponseEntity.ok(posts);
     }
