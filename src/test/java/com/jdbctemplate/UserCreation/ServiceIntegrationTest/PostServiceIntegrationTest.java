@@ -1,6 +1,8 @@
 package com.jdbctemplate.UserCreation.ServiceIntegrationTest;
 
 import com.jdbctemplate.UserCreation.AbstractIntegrationTest;
+import com.jdbctemplate.UserCreation.dto.PostCreateRequest;
+import com.jdbctemplate.UserCreation.dto.PostDto;
 import com.jdbctemplate.UserCreation.entity.PostEntity;
 import com.jdbctemplate.UserCreation.repos.PostRepos;
 import com.jdbctemplate.UserCreation.service.PostService;
@@ -36,43 +38,57 @@ public class PostServiceIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     void createPost() {
-        PostEntity postEntity1 = new PostEntity();
-        postEntity1.setTitle("Post 1");
-        postEntity1.setDescription("Description 1");
-        postEntity1.setUserId(1L);
+        // Создаем запрос для первого поста
+        PostCreateRequest postCreateRequest1 = new PostCreateRequest();
+        postCreateRequest1.setTitle("Post 1");
+        postCreateRequest1.setDescription("Description 1");
+        postCreateRequest1.setUserId(1L);
 
-        postService.createPost(postEntity1);
+        // Создаем пост
+        PostDto createResponse1 = postService.createPost(postCreateRequest1);
 
-        PostEntity createdPost = postRepos.findById(postEntity1.getId());
+        // Получаем созданный пост из репозитория по ID из ответа
+        PostEntity createdPost = postRepos.findById(createResponse1.getId());
         assertNotNull(createdPost);
         assertEquals("Post 1", createdPost.getTitle());
         assertEquals("Description 1", createdPost.getDescription());
 
-        PostEntity postEntity2 = new PostEntity();
-        postEntity2.setTitle("Post 2");
-        postEntity2.setDescription("Description 2");
-        postEntity2.setUserId(2L);
-        postService.createPost(postEntity2);
+        // Создаем запрос для второго поста
+        PostCreateRequest postCreateRequest2 = new PostCreateRequest();
+        postCreateRequest2.setTitle("Post 2");
+        postCreateRequest2.setDescription("Description 2");
+        postCreateRequest2.setUserId(2L);
 
-        PostEntity createdPost2 = postRepos.findById(postEntity2.getId());
+        // Создаем второй пост
+        PostDto createResponse2 = postService.createPost(postCreateRequest2);
+
+        // Получаем второй пост из репозитория
+        PostEntity createdPost2 = postRepos.findById(createResponse2.getId());
         assertNotNull(createdPost2);
         assertEquals("Post 2", createdPost2.getTitle());
         assertEquals("Description 2", createdPost2.getDescription());
 
-        postEntity1.setTitle("Updated Post 1");
-        postEntity1.setDescription("Updated Description 1");
-        postService.updatePost(postEntity1.getId(), postEntity1);
+        // Обновляем первый пост
+        postCreateRequest1.setTitle("Updated Post 1");
+        postCreateRequest1.setDescription("Updated Description 1");
 
-        PostEntity updatedPost = postRepos.findById(postEntity1.getId());
+        // Обновляем пост
+        postService.updatePost(createResponse1.getId(), postCreateRequest1);
+
+        // Получаем обновленный пост
+        PostEntity updatedPost = postRepos.findById(createResponse1.getId());
         assertNotNull(updatedPost);
         assertEquals("Updated Post 1", updatedPost.getTitle());
         assertEquals("Updated Description 1", updatedPost.getDescription());
 
-        postService.deletePost(postEntity1.getId());
+        // Удаляем первый пост
+        postService.deletePost(createResponse1.getId());
 
-        PostEntity deletedPost = postRepos.findById(postEntity1.getId());
+        // Проверяем, что пост удален
+        PostEntity deletedPost = postRepos.findById(createResponse1.getId());
         assertNull(deletedPost);
     }
+
 
     @Test
     void latest() {

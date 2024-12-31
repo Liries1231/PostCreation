@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -20,5 +21,7 @@ public class PostEntity {
     private String title;
     private String description;
     private Long userId;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 }
 

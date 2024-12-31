@@ -1,5 +1,7 @@
 package com.jdbctemplate.UserCreation.service;
 
+import com.jdbctemplate.UserCreation.dto.PostCreateRequest;
+import com.jdbctemplate.UserCreation.dto.PostDto;
 import com.jdbctemplate.UserCreation.entity.PostEntity;
 import com.jdbctemplate.UserCreation.repos.PostRepos;
 import jakarta.persistence.EntityNotFoundException;
@@ -7,45 +9,47 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 @Slf4j
 public class PostService {
     private final PostRepos postRepos;
-    private final Map<String, List<PostEntity>> cache = new HashMap<>();
+    private final List<PostDto> cache = new ArrayList<>();
 
 
-    public void createPost(PostEntity postEntity) {
-        postRepos.save(postEntity);
+    public PostDto createPost(PostCreateRequest postCreateRequest) {
+        PostEntity postEntity = PostMapper.toEntity(postCreateRequest);
+        PostEntity savedPost = postRepos.save(postEntity);
+        return PostMapper.toDto(savedPost);
     }
-
 
     public void deletePost(Long postId) {
         postRepos.delete(postId);
     }
 
 
-    public List<PostEntity> getLastPosts() {
-        String cacheKey = "latest_posts";
-        List<PostEntity> cachedPosts = cache.get(cacheKey);
-
-        if (cachedPosts != null) {
+    public ArrayList<PostDto> getLastPosts() {
+        if (!cache.isEmpty()) {
             log.info("Using cached latest posts...");
-            return cachedPosts;
+            return new ArrayList<>(cache);
         }
 
-        List<PostEntity> latestPosts = postRepos.findLastPost(10); // Предполагается, что этот метод уже возвращает List<PostEntity>
-        cache.put(cacheKey, latestPosts);
+        List<PostEntity> latestPosts = postRepos.findLastPost(10);
+        ArrayList<PostDto> postDtos = latestPosts.stream()
+                .map(PostMapper::toDto)
+                .collect(Collectors.toCollection(ArrayList::new));
 
-        return latestPosts;
+        cache.clear();
+        cache.addAll(postDtos);
+
+        return postDtos;
     }
 
-
-    public void updatePost(Long id, PostEntity postEntity) {
+    public void updatePost(Long id, PostCreateRequest postEntity) {
         PostEntity post = postRepos.findById(id);
         if (post != null) {
             post.setDescription(postEntity.getDescription());
@@ -57,17 +61,5 @@ public class PostService {
         }
     }
 
-
-    public List<PostEntity> pages(int page, int size) {
-        String cacheKey = "pages_" + page;
-
-        if (cache.containsKey(cacheKey)) {
-            return cache.get(cacheKey);
-        }
-
-        List<PostEntity> latestPosts = postRepos.findPostsByPage(page, size);
-        cache.put(cacheKey, latestPosts);
-
-        return latestPosts;
-    }
 }
+

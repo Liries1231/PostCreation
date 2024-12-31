@@ -1,5 +1,7 @@
 package com.jdbctemplate.UserCreation.controller;
 
+import com.jdbctemplate.UserCreation.dto.PostCreateRequest;
+import com.jdbctemplate.UserCreation.dto.PostDto;
 import com.jdbctemplate.UserCreation.entity.PostEntity;
 import com.jdbctemplate.UserCreation.service.PostService;
 import lombok.AllArgsConstructor;
@@ -7,8 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @AllArgsConstructor
@@ -19,23 +21,15 @@ public class PostController {
 
 
     @GetMapping("/last")
-    public List<PostEntity> lastPost() {
+    public ArrayList<PostDto> lastPost() {
         return postService.getLastPosts();
     }
 
-    @GetMapping("/page/{page}")
-    public ResponseEntity<List<PostEntity>> getPosts(@PathVariable int page,
-                                                              @RequestParam(defaultValue = "10") int pageSize) {
-        List<PostEntity> posts = postService.pages(page, pageSize);
-
-        return ResponseEntity.ok(posts);
-    }
 
 
     @PostMapping
-    public ResponseEntity<PostEntity> createPost(@RequestBody PostEntity postEntity) {
-        postService.createPost(postEntity);
-        return new ResponseEntity<>(postEntity, HttpStatus.CREATED);
+    public PostDto createPost(@RequestBody PostCreateRequest postCreateRequest) {
+        return postService.createPost(postCreateRequest);
     }
 
     @DeleteMapping("/{id}")
@@ -44,7 +38,7 @@ public class PostController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
     @PutMapping("/{id}")
-    public ResponseEntity<String> update(@PathVariable Long id, @RequestBody PostEntity postEntity) {
+    public ResponseEntity<String> update(@PathVariable Long id, @RequestBody PostCreateRequest postEntity) {
 
         postService.updatePost(id, postEntity);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

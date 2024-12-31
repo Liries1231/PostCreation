@@ -15,10 +15,11 @@ public class PostRepos {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public void save(PostEntity post) {
+    public PostEntity save(PostEntity post) {
         String sql = "INSERT INTO posts (title, description, user_id) VALUES (?, ?, ?) RETURNING id";
         Long generatedId = jdbcTemplate.queryForObject(sql, new Object[]{post.getTitle(), post.getDescription(), post.getUserId()}, Long.class);
         post.setId(generatedId);
+        return post;
     }
 
     public List<PostEntity> findPostsByPage(int page, int pageSize) {
