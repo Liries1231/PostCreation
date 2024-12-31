@@ -12,7 +12,7 @@
 	<artifactId>ms-post</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>ms-post</name>
-	<description>Demo project for Spring Boot</description>
+	<description>ms-post with integration test</description>
 	<url/>
 	<licenses>
 		<license/>
