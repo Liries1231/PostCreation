@@ -38,53 +38,42 @@ public class PostServiceIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     void createPost() {
-        // Создаем запрос для первого поста
         PostCreateRequest postCreateRequest1 = new PostCreateRequest();
         postCreateRequest1.setTitle("Post 1");
         postCreateRequest1.setDescription("Description 1");
         postCreateRequest1.setUserId(1L);
 
-        // Создаем пост
         PostDto createResponse1 = postService.createPost(postCreateRequest1);
 
-        // Получаем созданный пост из репозитория по ID из ответа
         PostEntity createdPost = postRepos.findById(createResponse1.getId());
         assertNotNull(createdPost);
         assertEquals("Post 1", createdPost.getTitle());
         assertEquals("Description 1", createdPost.getDescription());
 
-        // Создаем запрос для второго поста
         PostCreateRequest postCreateRequest2 = new PostCreateRequest();
         postCreateRequest2.setTitle("Post 2");
         postCreateRequest2.setDescription("Description 2");
         postCreateRequest2.setUserId(2L);
 
-        // Создаем второй пост
         PostDto createResponse2 = postService.createPost(postCreateRequest2);
 
-        // Получаем второй пост из репозитория
         PostEntity createdPost2 = postRepos.findById(createResponse2.getId());
         assertNotNull(createdPost2);
         assertEquals("Post 2", createdPost2.getTitle());
         assertEquals("Description 2", createdPost2.getDescription());
 
-        // Обновляем первый пост
         postCreateRequest1.setTitle("Updated Post 1");
         postCreateRequest1.setDescription("Updated Description 1");
 
-        // Обновляем пост
         postService.updatePost(createResponse1.getId(), postCreateRequest1);
 
-        // Получаем обновленный пост
         PostEntity updatedPost = postRepos.findById(createResponse1.getId());
         assertNotNull(updatedPost);
         assertEquals("Updated Post 1", updatedPost.getTitle());
         assertEquals("Updated Description 1", updatedPost.getDescription());
 
-        // Удаляем первый пост
         postService.deletePost(createResponse1.getId());
 
-        // Проверяем, что пост удален
         PostEntity deletedPost = postRepos.findById(createResponse1.getId());
         assertNull(deletedPost);
     }
