@@ -21,6 +21,18 @@ public class PostRepos {
         post.setId(generatedId);
         return post;
     }
+    public List<PostEntity> findAll() {
+        String sql = "SELECT id, title, description, user_id FROM posts";
+
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            PostEntity post = new PostEntity();
+            post.setId(rs.getLong("id"));
+            post.setTitle(rs.getString("title"));
+            post.setDescription(rs.getString("description"));
+            post.setUserId(rs.getLong("user_id"));
+            return post;
+        });
+    }
 
     public List<PostEntity> findPostsByPage(int page, int pageSize) {
         int offset = (page - 1) * pageSize;

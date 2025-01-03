@@ -18,5 +18,13 @@ public class PostDto {
     private String description;
     private Long userId;
     private LocalDateTime createdAt;
+    @Override
+    public String toString() {
+        return "PostDto{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 
 }

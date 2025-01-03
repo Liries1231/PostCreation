@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS post
     id          BIGSERIAL PRIMARY KEY,
     TITLE       VARCHAR,
     DESCRIPTION TEXT,
-    user_id     BIGINT
+    user_id     BIGSERIAL
 
 );
 DO $$
@@ -19,6 +19,7 @@ DO $$
     END $$;
 ALTER TABLE post ADD COLUMN created_at TIMESTAMP DEFAULT now();
 CREATE INDEX idx_post_created_at ON post (created_at DESC);
+
 
 
 

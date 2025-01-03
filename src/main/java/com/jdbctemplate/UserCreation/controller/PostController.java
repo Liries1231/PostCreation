@@ -2,7 +2,6 @@ package com.jdbctemplate.UserCreation.controller;
 
 import com.jdbctemplate.UserCreation.dto.PostCreateRequest;
 import com.jdbctemplate.UserCreation.dto.PostDto;
-import com.jdbctemplate.UserCreation.entity.PostEntity;
 import com.jdbctemplate.UserCreation.service.PostService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -10,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -26,7 +24,6 @@ public class PostController {
     }
 
 
-
     @PostMapping
     public PostDto createPost(@RequestBody PostCreateRequest postCreateRequest) {
         return postService.createPost(postCreateRequest);
@@ -37,13 +34,13 @@ public class PostController {
         postService.deletePost(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
     @PutMapping("/{id}")
     public ResponseEntity<String> update(@PathVariable Long id, @RequestBody PostCreateRequest postEntity) {
 
         postService.updatePost(id, postEntity);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
 
 
 }
