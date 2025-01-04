@@ -27,6 +27,7 @@ public class PostService {
     private final PostRepos postRepos;
     private final List<PostDto> cache = new ArrayList<>();
     private static final Logger logger = LoggerFactory.getLogger(PostService.class);
+
     private final LinkedBlockingQueue<Runnable> taskQueue = new LinkedBlockingQueue<>();
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
@@ -100,7 +101,7 @@ public class PostService {
     }
 
 
-    @Scheduled(fixedRate = 1000)
+    @Scheduled(fixedRate = 300000)
     public void updateCache() {
         taskQueue.offer(() -> {
             logger.info("Новый кэш: {}", cache);

@@ -24,9 +24,17 @@ public class PostController {
     }
 
 
-    @PostMapping
-    public PostDto createPost(@RequestBody PostCreateRequest postCreateRequest) {
-        return postService.createPost(postCreateRequest);
+    @PostMapping()
+    public ResponseEntity<String> createPost(@RequestBody PostCreateRequest post,
+                                             @RequestHeader("UserData") String userId) {
+
+
+        Long userIdLong = Long.valueOf(userId);
+        post.setUserId(userIdLong);
+
+        postService.createPost(post);
+
+        return ResponseEntity.ok("Post created successfully!");
     }
 
     @DeleteMapping("/{id}")
