@@ -21,6 +21,7 @@ public class PostRepos {
         post.setId(generatedId);
         return post;
     }
+
     public List<PostEntity> findAll() {
         String sql = "SELECT id, title, description, user_id FROM posts";
 
@@ -79,6 +80,7 @@ public class PostRepos {
             return null;
         }
     }
+
 
 
 }

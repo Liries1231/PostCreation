@@ -35,6 +35,7 @@ public class PostService {
     public void init() {
         executorService.submit(this::processQueue);
     }
+
     private void processQueue() {
         try {
             while (true) {
@@ -48,7 +49,6 @@ public class PostService {
             Thread.currentThread().interrupt();
         }
     }
-
 
 
     public PostDto createPost(PostCreateRequest postCreateRequest) {
@@ -66,6 +66,7 @@ public class PostService {
 
 
     }
+
     public void deletePost(Long postId) {
         postRepos.delete(postId);
         cache.add(PostMapper.toDto(postRepos.findById(postId)));
@@ -73,6 +74,13 @@ public class PostService {
 
     }
 
+    public PostDto getPostById(Long postId) {
+        PostEntity post = postRepos.findById(postId);
+        if (post != null) {
+            return new PostDto(post.getId(), post.getTitle(), post.getDescription());
+        }
+        return null;  // Или выбросить исключение, если нужно
+    }
 
     public ArrayList<PostDto> getLastPosts() {
 
@@ -92,7 +100,7 @@ public class PostService {
         if (post != null) {
             post.setDescription(postEntity.getDescription());
             post.setTitle(postEntity.getTitle());
-           post.setUserId(postEntity.getUserId());
+            post.setUserId(postEntity.getUserId());
             postRepos.update(post);
         } else {
             throw new EntityNotFoundException("Post with id " + id + " not found");
@@ -114,8 +122,6 @@ public class PostService {
 
         });
     }
-
-
 
 
 }

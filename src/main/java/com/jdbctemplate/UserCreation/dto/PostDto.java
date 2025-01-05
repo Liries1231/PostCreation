@@ -18,6 +18,11 @@ public class PostDto {
     private String description;
     private Long userId;
     private LocalDateTime createdAt;
+    public PostDto(Long id, String title, String description) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+    }
     @Override
     public String toString() {
         return "PostDto{" +
