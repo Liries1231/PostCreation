@@ -23,4 +23,5 @@ public class PostEntity {
     private Long userId;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
 }
